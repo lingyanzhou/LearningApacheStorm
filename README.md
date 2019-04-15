@@ -9,7 +9,6 @@ Apache Storm gurantees at-least-once where as Trident guarantees once-and-only-o
 Comparison:
 
 
-|----------|----------------------|----------------|--------------|
 |Framework | Guranteed processing | Stream / Batch | Ordered      |
 |----------|----------------------|----------------|--------------|
 |Storm     |  at least once       | stream         |  no          |
@@ -17,7 +16,6 @@ Comparison:
 |Spark     |  once                | mini batch     |  no          |
 |Hadoop    |  once                | batch          |  -           |
 |Flint     |  once                | stream         |  yes         |
-|----------|----------------------|----------------|--------------|
 
 
 ## Setting up a cluster
