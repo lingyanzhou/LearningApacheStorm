@@ -1,0 +1,93 @@
+version: '3.3'
+networks: 
+  storm_cluster: 
+    attachable: true
+services: 
+  zookeeper: 
+    image: zookeeper:3.4.14
+    hostname: zookeeper
+    deploy: 
+      restart_policy: 
+        condition: any
+    networks: 
+      - storm_cluster
+      
+  nimbus1: 
+    image: apache-storm:1.2.2
+    hostname: nimbus1
+    deploy: 
+      restart_policy: 
+        condition: any
+    ports: 
+      - "6627:6627"
+    networks: 
+      - storm_cluster
+    command: storm nimbus
+  
+#  nimbus2: 
+#    image: apache-storm:1.2.2
+#    hostname: nimbus2
+#    deploy: 
+#      restart_policy: 
+#        condition: any
+#    ports: 
+#      - "6628:6627"
+#    networks: 
+#      - storm_cluster
+#    command: storm nimbus
+    
+  supervisor1: 
+    image: apache-storm:1.2.2
+    hostname: supervisor1
+    deploy: 
+      restart_policy: 
+        condition: any
+    networks: 
+      - storm_cluster
+    command: storm supervisor
+
+#  supervisor2: 
+#    image: apache-storm:1.2.2
+#    hostname: supervisor2
+#    depends_on: 
+#      - nimbus1
+#      - nimbus2
+#    deploy: 
+#      restart_policy: 
+#        condition: any
+#    networks: 
+#      - storm_cluster
+#    command: storm supervisor
+  ui: 
+    image: apache-storm:1.2.2
+    hostname: ui
+    deploy: 
+      restart_policy: 
+        condition: any
+    ports: 
+      - "8080:8080"
+    networks: 
+      - storm_cluster
+    command: storm ui
+  drpc: 
+    image: apache-storm:1.2.2
+    hostname: drpc
+    deploy: 
+      restart_policy: 
+        condition: any
+    ports: 
+      - "3772:3772"
+    networks: 
+      - storm_cluster
+    command: storm drpc
+  redis:
+    image: redis
+    hostname: redis
+    deploy: 
+      restart_policy: 
+        condition: any
+    ports: 
+      - "6379:6379"
+    networks:
+      - storm_cluster
+    
