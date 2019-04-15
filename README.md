@@ -56,7 +56,7 @@ docker stack deploy -c storm_cluster.yml storm_cluster
 
 ### Spout, Bolt, Topology, Stream
 
-A spont generates data. A bolt process data. A topology defines how spouts and bolts are connected.
+A spont generates data. A bolt process data. A topology defines how spouts and bolts are connected. A stream is an unbounded sequence of tuples.
 Spouts can emit more than one stream. Bolts can receive and emits more than one stream.
 Stream Id can be used to distinguish streams and tuples.
 
@@ -82,8 +82,21 @@ It's the programmer's responsibility to provide proper error handling in `fail()
 ## Common patterns
 
 - [Local cluster](StormLearning-java/src/main/java/lzhou/learning/storm/examples/LocalClusterExample.java)
+LocalCluster is an embedded cluster. But `storm-core` jar need to be in the class path. Use `LocalCluster` for testing topologies.
+
 - [Multiple streams](StormLearning-java/src/main/java/lzhou/learning/storm/examples/ControlStreamExample.java)
+Spouts or bolts can generate multiple streams by specifying stream ids. Bolts can receive multiple streams. Tuples have a property `StreamId`; use it to distinguish tuples from different sources.
+
 - [Windowed](StormLearning-java/src/main/java/lzhou/learning/storm/examples/MovingAverageExample.java)
+Storm has `BaseWindowedBolt` abstract class. Window steps can be specified in count of tuples, or interval in time.
+
 - [Top K](StormLearning-java/src/main/java/lzhou/learning/storm/examples/TopkExample.java)
+Like the Hadoop Top K pattern, use multiple levels of aggregator bolts to calculate intermediate top K's, then in the last bolt, calculate the global top K.
+
 - [Stream Join](StormLearning-java/src/main/java/lzhou/learning/storm/examples/StreamJoinExample.java)
+Storm does not guarantee the order of streams. So the joining bolt need to cache some out-of-order tuples. This example uses Guava cache because `TimeCacheMap` is deprecated.
+
 - [DRPC](StormLearning-java/src/main/java/lzhou/learning/storm/examples/DrpcExample.java)
+DRPC allows clients to call a Storm topology and get the result back like a normal RPC call.
+In Storm's configuration, `drpc.server` must be specified and Storm
+DRPC server must be started with `storm drpc`.
